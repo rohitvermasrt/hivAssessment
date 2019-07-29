@@ -52,13 +52,22 @@ class HIVController {
 
         var config = process.env["SQLConnectionString"];
         console.log(config)
-        // objSubAssess.forEach(function(subAssess) {
-        //     var tableName = table.name;
-        //     var tvp_Emp = new sql.Table();  
-        //     // Columns must correspond with type we have created in database.   
-        //     tvp_Emp.columns.add('Name', sql.VarChar(50));  
-        //     tvp_Emp.columns.add('Salary', sql.Decimal(5, 0));
-        // });
+        objSubAssess.forEach(function(subAssess) {
+            var tableName = table.name;
+            var tvp_SAAns = new sql.Table();  
+            // Columns must correspond with type we have created in database.   
+            tvp_SAAns.columns.add('questionId', sql.Int);  
+            tvp_SAAns.columns.add('optionId', sql.Int);  
+            tvp_SAAns.columns.add('optionValue', sql.Bit);  
+            tvp_SAAns.columns.add('optionResponse', sql.NVarChar(100));  
+            
+            subAssess.answers.forEach(function(answer){
+                console.log(answer.optionValue);
+                tvp_SAAns.rows.add(answer.questionId,answer.optionId,answer.optionValue="true"?1:0,answer.optionResponse)
+            });
+
+
+        });
 
         console.log(objSubAssess);
 

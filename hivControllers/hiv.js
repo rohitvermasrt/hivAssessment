@@ -52,8 +52,9 @@ class HIVController {
 
         var config = process.env["SQLConnectionString"];
         console.log(config)
+
         objSubAssess.forEach(function(subAssess) {
-            var tableName = table.name;
+            const request = new sql.Request();
             var tvp_SAAns = new sql.Table();  
             // Columns must correspond with type we have created in database.   
             tvp_SAAns.columns.add('questionId', sql.Int);  
@@ -66,6 +67,14 @@ class HIVController {
                 tvp_SAAns.rows.add(answer.questionId,answer.optionId,answer.optionValue="true"?1:0,answer.optionResponse)
             });
 
+            var tvp_SAQStatus = new sql.Table();  
+            // Columns must correspond with type we have created in database.   
+            tvp_SAQStatus.columns.add('questionId', sql.Int);  
+            tvp_SAQStatus.columns.add('status', sql.NVarChar(50));  
+            subAssess.questionStatuses.forEach(function(queStatus){
+                console.log(queStatus.status);
+                tvp_SAAns.rows.add(queStatus.questionId,queStatus.status)
+            });
 
         });
 

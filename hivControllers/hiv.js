@@ -50,17 +50,17 @@ class HIVController {
         })
         .ToArray();
 
-        var config = process.env["SQLConnectionString"];
+        var config = JSON.parse(process.env["SQLConnectionString"]);
         console.log(config)
-        const pool1 = new sql.ConnectionPool(config);
-        const pool1Connect = pool1.connect();
+        // const pool1 = new sql.ConnectionPool(config);
+        // const pool1Connect = pool1.connect();
 
-        pool1.on('error', err => {
-            console.error("error while connecting...");
-            // ... error handler
-        })
+        // pool1.on('error', err => {
+        //     console.error("error while connecting...");
+        //     // ... error handler
+        // })
         objSubAssess.forEach(function(subAssess) {
-            const request = new sql.Request();
+            const sqlRequest = new sql.Request();
             var tvp_SAAns = new sql.Table();  
             // Columns must correspond with type we have created in database.   
             tvp_SAAns.columns.add('questionId', sql.Int);  
@@ -79,8 +79,25 @@ class HIVController {
             tvp_SAQStatus.columns.add('status', sql.NVarChar(50));  
             subAssess.questionStatuses.forEach(function(queStatus){
                 console.log(queStatus.status);
-                tvp_SAAns.rows.add(queStatus.questionId,queStatus.status)
+                tvp_SAQStatus.rows.add(queStatus.questionId,queStatus.status)
             });
+
+            request.input('SAAnswers', tvp_SAAns);
+            request.input('SAQuestionStatus', tvp_SAQStatus);
+            request.input('deviceId', objUser.deviceId);
+            request.input('email', objUser.emailId);
+            request.input('fullName', objUser.fullName);
+            request.input('trialId', objUser.trialId);
+            request.input('patientId', objUser.patientId);
+            request.input('startTime', subAssess.startTime);
+            request.input('endTime', subAssess.endTime);
+            request.input('risk', subAssess.riskValue);
+            request.input('jsonVersion', subAssess.jsonVersion);
+            request.input('riskValue', subAssess.riskValue);
+            request.input('latitude', subAssess.latitude);
+            request.input('longitude', subAssess.longitude);
+            request.input('devicetimeStamp', objUser.deviceTimestamp);
+
 
         });
 

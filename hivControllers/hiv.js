@@ -56,7 +56,7 @@ class HIVController {
         })
         .ToArray();
 
-        var config = process.env["SQLConnectionString"]  ;
+        var config = process.env["SQLConnectionString"];
 
         sql.on('error', err => {
             console.log(err);
@@ -76,7 +76,7 @@ class HIVController {
                     
                     subAssess.answers.forEach(function(answer){
                        
-                        tvp_SAAns.rows.add(answer.questionId,answer.optionId,answer.optionValue="true"?1:0,answer.optionResponse)
+                        tvp_SAAns.rows.add(answer.questionId,answer.optionId,answer.optionValue=="true"?1:0,answer.optionResponse)
                     });
 
                     var tvp_SAQStatus = new sql.Table();  

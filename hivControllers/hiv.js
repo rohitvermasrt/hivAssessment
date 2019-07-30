@@ -52,7 +52,13 @@ class HIVController {
 
         var config = process.env["SQLConnectionString"];
         console.log(config)
+        const pool1 = new sql.ConnectionPool(config);
+        const pool1Connect = pool1.connect();
 
+        pool1.on('error', err => {
+            console.error("error while connecting...");
+            // ... error handler
+        })
         objSubAssess.forEach(function(subAssess) {
             const request = new sql.Request();
             var tvp_SAAns = new sql.Table();  

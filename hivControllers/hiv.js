@@ -50,7 +50,7 @@ class HIVController {
         })
         .ToArray();
 
-        var config = JSON.parse(process.env["SQLConnectionString"]);
+        var config = process.env["SQLConnectionString"];
         console.log(config)
         // const pool1 = new sql.ConnectionPool(config);
         // const pool1Connect = pool1.connect();

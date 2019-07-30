@@ -82,21 +82,21 @@ class HIVController {
                 tvp_SAQStatus.rows.add(queStatus.questionId,queStatus.status)
             });
 
-            request.input('SAAnswers', tvp_SAAns);
-            request.input('SAQuestionStatus', tvp_SAQStatus);
-            request.input('deviceId', objUser.deviceId);
-            request.input('email', objUser.emailId);
-            request.input('fullName', objUser.fullName);
-            request.input('trialId', objUser.trialId);
-            request.input('patientId', objUser.patientId);
-            request.input('startTime', subAssess.startTime);
-            request.input('endTime', subAssess.endTime);
-            request.input('risk', subAssess.riskValue);
-            request.input('jsonVersion', subAssess.jsonVersion);
-            request.input('riskValue', subAssess.riskValue);
-            request.input('latitude', subAssess.latitude);
-            request.input('longitude', subAssess.longitude);
-            request.input('devicetimeStamp', objUser.deviceTimestamp);
+            sqlRequest.input('SAAnswers', tvp_SAAns);
+            sqlRequest.input('SAQuestionStatus', tvp_SAQStatus);
+            sqlRequest.input('deviceId', objUser.deviceId);
+            sqlRequest.input('email', objUser.emailId);
+            sqlRequest.input('fullName', objUser.fullName);
+            sqlRequest.input('trialId', objUser.trialId);
+            sqlRequest.input('patientId', objUser.patientId);
+            sqlRequest.input('startTime', subAssess.startTime);
+            sqlRequest.input('endTime', subAssess.endTime);
+            sqlRequest.input('risk', subAssess.riskValue);
+            sqlRequest.input('jsonVersion', subAssess.jsonVersion);
+            sqlRequest.input('riskValue', subAssess.riskValue);
+            sqlRequest.input('latitude', subAssess.latitude);
+            sqlRequest.input('longitude', subAssess.longitude);
+            sqlRequest.input('devicetimeStamp', objUser.deviceTimestamp);
 
 
         });

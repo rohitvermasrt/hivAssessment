@@ -9,4 +9,10 @@ router.post('/api/v1/checkpost', hivController.testCheckPost);
 
 router.post('/api/v1/hivmgdSync', hivController.hivmgdSync);
 
+router.get('/', (req, res) => {
+    res.sendFile('index.html', {
+        root: './public'
+      });
+})
+
 export default router;

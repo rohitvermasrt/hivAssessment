@@ -5,9 +5,7 @@ var sql = require('mssql');
 class HIVController {
 
     testCheck(req,res){
-        var config ='{"host":"mgdhidsdsvdata.dadsdtdsabase.dsds.net", "user":"assaasa", "password":"abc1234","database":"hivmgddev","encrypt":true}';
-
-      
+          
         console.log(JSON.parse(config).host);
         console.log(config);
         res.status(200).send({
@@ -59,14 +57,16 @@ class HIVController {
         var config = process.env["SQLConnectionString"];
 
         sql.on('error', err => {
+            console.log("SQL Connection Error");
             console.log(err);
             // ... error handler
         });
 
-        sql.connect(config)
+        return sql.connect(config)
         .then(pool => {
+            var subAssessCount = 0;
                 objSubAssess.forEach(function(subAssess) {
-                    
+                    subAssessCount +=1;
                     var tvp_SAAns = new sql.Table();  
                      
                     tvp_SAAns.columns.add('questionId', sql.Int);  
@@ -110,24 +110,38 @@ class HIVController {
                     .then(result => {
                         console.dir(result);
                         console.log('Then closing sql connection');
-                        sql.close();
-                        res.status(200).send({
-                            success: 'true',
-                            message: 'HIV MGD data sync successful...'
-                        });
+                        // sql.close();
+                        // res.status(200).send({
+                        //     success: 'true',
+                        //     message: 'HIV MGD data sync successful...'
+                        // });
+                        return true;
                     })
                     .catch(err => {
                         // ... error checks
                         console.log('In catch closing sql connection');
                         sql.close();
-                        console.log(err);
-                        res.status(500).send({
-                            success: 'false',
-                            message: 'HIV MGD data sync successful...'
-                        });
+                        console.log(err.message);
+                        
                     });
-				});
-        }).catch(err => {
+                });
+                console.log("For each finished");
+                var finalResponse = 
+                {
+                    status: true , 
+                    message : "",
+                    totalSubjectiveAssessment : subAssessCount
+                };
+                return finalResponse;
+        })
+        .then(result =>{
+            sql.close();
+            res.status(200).send({
+                success: 'true',
+                message: 'HIV MGD data sync successful...'
+            });
+        })
+        .catch(err => {
             // ... error checks
             console.log('Out catch closing sql connection');
             sql.close();
@@ -137,13 +151,7 @@ class HIVController {
                 message: 'HIV MGD data sync successful...'
             });
         });
-            console.log(objSubAssess);
-
-        
-
-        
-
-     
+  
     }
 }
 const hivController = new HIVController();

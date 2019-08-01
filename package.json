@@ -16,7 +16,8 @@
     "express": "^4.17.1",
     "kill-port": "^1.5.1",
     "mssql": "^5.1.0",
-    "node-linq": "0.0.5"
+    "node-linq": "0.0.5",
+    "promise": "^8.0.3"
   },
   "devDependencies": {
     "nodemon": "^1.19.1"

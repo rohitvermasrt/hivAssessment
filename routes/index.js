@@ -9,6 +9,8 @@ router.post('/api/v1/checkpost', hivController.testCheckPost);
 
 router.post('/api/v1/hivmgdSync', hivController.hivmgdSync);
 
+router.get('/api/v1/getSubjectiveAssessment:id', hivController.getSubjectiveAssessment);
+
 router.get('/', (req, res) => {
     res.sendFile('index.html', {
         root: './public'

@@ -21,7 +21,7 @@ class HIVController {
     }
 
     getSubjectiveAssessment(req,res){
-        var config = process.env["SQLConnectionString"] ;
+        var config = process.env["SQLConnectionString"] ||  "mssql://mgdhivdataadmin:Bss@2005@mgdhivdata.database.windows.net/hivmgddev?encrypt=true" ;
         const id = parseInt(req.params.id, 10);
         sql.on('error', err => {
             console.log("SQL Connection Error");
@@ -37,14 +37,20 @@ class HIVController {
             .then(result => {
                 //console.log(result.recordsets.length());
                 console.log(JSON.stringify(result.recordsets[0]));
-                var qJSON = result.recordsets[0].
-                console.log('Then closing sql connection');
                 sql.close();
-                res.status(200).send({
-                    success: 'true',
-                    result: result,
-                    message: 'HIV MGD data sync successful...'
-                });
+                console.log('Then closing sql connection');
+                if(result.recordsets.length >0 ){
+                    res.status(200).send({
+                        success: 'true',
+                        message: 'Data found for given Subjective Assessment.',
+                        result : JSON.stringify(result.recordsets[0].toTable())
+                    });
+                }else{
+                    res.status(400).send({
+                        success: 'false',
+                        message: 'No data found for given Subjective Assessment.'
+                    });
+                }
                 return true;
             });
             
@@ -80,7 +86,9 @@ class HIVController {
                         startTime : subAss.startTime,
                         endTime : subAss.endTime,
                         deviceTimestamp : subAss.timestamp,
+                        risk : subAss.risk,
                         riskValue : subAss.riskValue,
+                        partnerRiskValue : subAss.partnerRiskValue,
                         latitude : subAss.latitude,
                         longitude : subAss.longitude,
                         answers: subAss.answers,
@@ -91,7 +99,7 @@ class HIVController {
         })
         .ToArray();
 
-        var config = process.env["SQLConnectionString"] ||  "mssql://mgdhivdataadmin:Bss@2005@mgdhivdata.database.windows.net/hivmgddev?encrypt=true" ;
+        var config = process.env["SQLConnectionString"];
 
         sql.on('error', err => {
             console.log("SQL Connection Error");
@@ -174,9 +182,10 @@ class HIVController {
                 .input('patientId', subAsses.patientId)
                 .input('startTime', subAsses.startTime)
                 .input('endTime', subAsses.endTime)
-                .input('risk', subAsses.riskValue)
-                .input('jsonVersion', subAsses.jsonVersion)
+                .input('risk', subAsses.risk)
                 .input('riskValue', subAsses.riskValue)
+                .input('partnerRiskValue', subAsses.partnerRiskValue)
+                .input('jsonVersion', subAsses.jsonVersion)
                 .input('latitude', subAsses.latitude)
                 .input('longitude', subAsses.longitude)
                 .input('devicetimeStamp', objUser.deviceTimestamp)

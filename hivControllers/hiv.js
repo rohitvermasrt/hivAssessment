@@ -21,7 +21,7 @@ class HIVController {
     }
 
     getSubjectiveAssessment(req,res){
-        var config = process.env["SQLConnectionString"] ||  "mssql://mgdhivdataadmin:Bss@2005@mgdhivdata.database.windows.net/hivmgddev?encrypt=true" ;
+        var config = process.env["SQLConnectionString"];
         const id = parseInt(req.params.id, 10);
         sql.on('error', err => {
             console.log("SQL Connection Error");

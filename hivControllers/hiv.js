@@ -188,7 +188,7 @@ class HIVController {
                 .input('jsonVersion', subAsses.jsonVersion)
                 .input('latitude', subAsses.latitude)
                 .input('longitude', subAsses.longitude)
-                .input('devicetimeStamp', objUser.deviceTimestamp)
+                .input('devicetimeStamp', subAsses.deviceTimestamp)
                 .execute("Insert_HIVSubjectiveAssessment")
                 .then(result => {
                     console.dir(result);

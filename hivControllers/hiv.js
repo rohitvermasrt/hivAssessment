@@ -29,7 +29,7 @@ class HIVController {
             // ... error handler
         });
 
-        return sql.connect(config)
+        return new sql.ConnectionPool(config).connect()
         .then(pool => {
            return pool.request()
             .input('id', id)
@@ -100,7 +100,7 @@ class HIVController {
         })
         .ToArray();
 
-        var config = JSON.parse(process.env["SQLConnectionString"] || '{"user": "mgdhivdataadmin","password": "Bss@2005","server": "mgdhivdata.database.windows.net","database":"hivmgdprod","encrypt": true}');
+        var config = JSON.parse(process.env["SQLConnectionString"]);
 
         sql.on('error', err => {
             console.log("SQL Connection Error");

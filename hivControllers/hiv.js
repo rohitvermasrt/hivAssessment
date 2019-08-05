@@ -1,9 +1,7 @@
-var LINQ = require('node-linq').LINQ;
-var sql = require('mssql');
-
-  
+ 
 class HIVController {
-
+  
+    
     testCheck(req,res){
           
         res.status(200).send({
@@ -21,6 +19,8 @@ class HIVController {
     }
 
     getSubjectiveAssessment(req,res){
+        var LINQ = require('node-linq').LINQ;
+        var sql = require('mssql');
         var config = process.env["SQLConnectionString"];
         const id = parseInt(req.params.id, 10);
         sql.on('error', err => {
@@ -66,7 +66,8 @@ class HIVController {
 
 
     hivmgdSync(req,res){
-
+        var LINQ = require('node-linq').LINQ;
+        var sql = require('mssql');
         var data = req.body;
         var user = data.user;
         var objUser = {
@@ -99,7 +100,7 @@ class HIVController {
         })
         .ToArray();
 
-        var config = process.env["SQLConnectionString"];
+        var config = JSON.parse(process.env["SQLConnectionString"] || '{"user": "mgdhivdataadmin","password": "Bss@2005","server": "mgdhivdata.database.windows.net","database":"hivmgdprod","encrypt": true}');
 
         sql.on('error', err => {
             console.log("SQL Connection Error");
@@ -107,7 +108,7 @@ class HIVController {
             // ... error handler
         });
 
-        return sql.ConnectionPool(config).connect()
+        return new sql.ConnectionPool(config).connect()
         .then(pool => {
             var subAssessCount = 0;
             pool.request()

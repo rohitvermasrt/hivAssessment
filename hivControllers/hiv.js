@@ -107,7 +107,7 @@ class HIVController {
             // ... error handler
         });
 
-        return sql.connect(config)
+        return sql.ConnectionPool(config).connect()
         .then(pool => {
             var subAssessCount = 0;
             pool.request()

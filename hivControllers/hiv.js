@@ -67,7 +67,6 @@ class HIVController {
 
     hivmgdSync(req,res){
         var LINQ = require('node-linq').LINQ;
-        var sql = require('mssql');
         var data = req.body;
         var user = data.user;
         var objUser = {
@@ -99,9 +98,8 @@ class HIVController {
                     };
         })
         .ToArray();
-
-        var config = JSON.parse(process.env["SQLConnectionString"]);
-
+        var sql = require('mssql');
+        var config = JSON.parse(process.env["SQLConnectionString"] || '{"user": "mgdhivdataadmin","password": "Bss@2005","server": "mgdhivdata.database.windows.net","database":"hivmgdprod","encrypt": true}');
         sql.on('error', err => {
             console.log("SQL Connection Error");
             console.log(err);
@@ -173,7 +171,7 @@ class HIVController {
 
                 console.log('before sql');
                 
-                pool.request()
+                return pool.request()
                 .input('SAAnswers', tvp_SAAns)
                 .input('SAQuestionStatus', tvp_SAQStatus)
                 .input('deviceId', objUser.deviceId)
@@ -204,7 +202,7 @@ class HIVController {
                 .catch(err => {
                     // ... error checks
                     console.log('In catch closing sql connection');
-                    sql.close();
+                    //sql.close();
                    
                     reject(err);
                 });

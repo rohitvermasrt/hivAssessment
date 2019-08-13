@@ -19,31 +19,32 @@ class HIVController {
     }
 
     getSubjectiveAssessment(req,res){
-        var LINQ = require('node-linq').LINQ;
+        var data = req.body; 
         var sql = require('mssql');
-        var config = process.env["SQLConnectionString"];
-        const id = parseInt(req.params.id, 10);
+        var config = JSON.parse(process.env["SQLConnectionString"]);
         sql.on('error', err => {
             console.log("SQL Connection Error");
             console.log(err);
             // ... error handler
         });
 
+        const id = parseInt(req.params.id, 10);
+
         return new sql.ConnectionPool(config).connect()
         .then(pool => {
-           return pool.request()
+            pool.request()
             .input('id', id)
             .execute("get_SubjectiveAssessment")
             .then(result => {
-                //console.log(result.recordsets.length());
-                console.log(JSON.stringify(result.recordsets[0]));
-                sql.close();
+                console.dir(result);
+                //console.log(JSON.stringify(result.recordsets[0]));
                 console.log('Then closing sql connection');
+                sql.close();
                 if(result.recordsets.length >0 ){
                     res.status(200).send({
                         success: 'true',
                         message: 'Data found for given Subjective Assessment.',
-                        result : JSON.stringify(result.recordsets[0].toTable())
+                        result : result
                     });
                 }else{
                     res.status(400).send({
@@ -51,18 +52,20 @@ class HIVController {
                         message: 'No data found for given Subjective Assessment.'
                     });
                 }
-                return true;
+            })
+            .catch(err => {
+                console.log('In catch closing sql connection');
+                sql.close();
+                console.log(err.message);
+                res.status(500).send({
+                    success: 'false',
+                    message: err.message
+                });
             });
-            
-        }).catch(err => {
-            // ... error checks
-            console.log('In catch closing sql connection');
-            sql.close();
-            console.log(err.message);
-            
-        });;
-               
-}
+
+        });
+
+    }
 
 
     hivmgdSync(req,res){
@@ -99,7 +102,7 @@ class HIVController {
         })
         .ToArray();
         var sql = require('mssql');
-        var config = JSON.parse(process.env["SQLConnectionString"] || '{"user": "mgdhivdataadmin","password": "Bss@2005","server": "mgdhivdata.database.windows.net","database":"hivmgdprod","encrypt": true}');
+        var config = JSON.parse(process.env["SQLConnectionString"]);
         sql.on('error', err => {
             console.log("SQL Connection Error");
             console.log(err);

@@ -42,7 +42,7 @@ $(document).ready(function() {
 function getHIVSubjectiveAssessmentByUserID(userid)
     {
         var apiHost = $(location).attr('host');
-        var apiURL = "http://" + apiHost + "/api/v1/getHIVSubjectiveAssessmentByUserID" + userid;
+        var apiURL = "https://" + apiHost + "/api/v1/getHIVSubjectiveAssessmentByUserID" + userid;
         console.log(apiURL);
         $.ajax({
             url: apiURL,
@@ -89,7 +89,7 @@ function getHIVSubjectiveAssessmentByUserID(userid)
     {
         //const userID = $.urlParam('id');
         var apiHost = $(location).attr('host');
-        var apiURL = "http://" + apiHost + "/api/v1/getUsersByTrialID" + trialID;
+        var apiURL = "https://" + apiHost + "/api/v1/getUsersByTrialID" + trialID;
         console.log(apiURL);
         $.ajax({
             url: apiURL,
@@ -114,7 +114,7 @@ function getHIVSubjectiveAssessmentByUserID(userid)
     {
         const subAssID = id;
         var apiHost = $(location).attr('host');
-        var apiURL = "http://" + apiHost + "/api/v1/getSubjectiveAssessment" + subAssID;
+        var apiURL = "https://" + apiHost + "/api/v1/getSubjectiveAssessment" + subAssID;
         console.log(apiURL);
         $.ajax({
             url: apiURL,

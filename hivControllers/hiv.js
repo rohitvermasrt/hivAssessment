@@ -21,7 +21,7 @@ class HIVController {
     getSubjectiveAssessment(req,res){
         var data = req.body; 
         var sql = require('mssql');
-        var config = JSON.parse(process.env["SQLConnectionString"]);
+        var config = JSON.parse(process.env["SQLConnectionString"] );
         sql.on('error', err => {
             console.log("SQL Connection Error");
             console.log(err);
@@ -70,7 +70,7 @@ class HIVController {
     getSubjectiveAssessmentByUserID(req,res){
         var data = req.body; 
         var sql = require('mssql');
-        var config = JSON.parse(process.env["SQLConnectionString"]);
+        var config = JSON.parse(process.env["SQLConnectionString"] );
         sql.on('error', err => {
             console.log("SQL Connection Error");
             console.log(err);
@@ -115,7 +115,7 @@ class HIVController {
 
     getUsersByTrialID(req,res){
         var sql = require('mssql');
-        var config = JSON.parse(process.env["SQLConnectionString"] );
+        var config = JSON.parse(process.env["SQLConnectionString"]);
         sql.on('error', err => {
             console.log("SQL Connection Error");
             console.log(err);
@@ -195,7 +195,7 @@ class HIVController {
         })
         .ToArray();
         var sql = require('mssql');
-        var config = JSON.parse(process.env["SQLConnectionString"] );
+        var config = JSON.parse(process.env["SQLConnectionString"]);
         sql.on('error', err => {
             console.log("SQL Connection Error");
             console.log(err);
@@ -283,12 +283,12 @@ class HIVController {
                 .then(result => {
                     console.dir(result);
                     console.log('Then closing sql connection');
-                    resolve({status:'true',message: 'Subjective Assessment Recorded Successfully.'});
+                    resolve({success:'true',message: 'Subjective Assessment Recorded Successfully.'});
                 })
                 .catch(err => {
                     // ... error checks
                     console.log('In catch closing sql connection');                   
-                    reject({status:'false',message:err});
+                    reject({success:'false',message:err});
                 });
                
                 

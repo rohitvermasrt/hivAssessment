@@ -115,7 +115,7 @@ class HIVController {
 
     getUsersByTrialID(req,res){
         var sql = require('mssql');
-        var config = JSON.parse(process.env["SQLConnectionString"]);
+        var config = JSON.parse(process.env["SQLConnectionString"] );
         sql.on('error', err => {
             console.log("SQL Connection Error");
             console.log(err);
@@ -195,7 +195,7 @@ class HIVController {
         })
         .ToArray();
         var sql = require('mssql');
-        var config = JSON.parse(process.env["SQLConnectionString"] || '{"user": "mgdhivdataadmin","password": "Bss@2005","server": "mgdhivdata.database.windows.net","database":"hivmgddev","encrypt": true,"connectionTimeout": 300000,"requestTimeout": 300000,"options": {"encrypt": true},"pool":{"max": 100,"min": 0,"idleTimeoutMillis": 300000 }}');
+        var config = JSON.parse(process.env["SQLConnectionString"] );
         sql.on('error', err => {
             console.log("SQL Connection Error");
             console.log(err);
@@ -215,89 +215,83 @@ class HIVController {
             .then(result => {
                 console.dir(result);
                 responseData.UserID = result.returnValue;
-                var myPromises = []
-                objSubAssess.forEach(subAssess => {
-                    myPromises.push(insert_HIVSA(subAssess,pool));
-                });
-
-                return  Promise.all(myPromises);
+                return insert_HIVSA(objSubAssess,responseData.UserID,objUser.deviceId,pool);
             })           
             .then((result) => {
                 console.log('Then ');
                 console.log(result);
                 sql.close();
                 responseData.returnValue = result;
-                res.status(200).send({
-                    success: 'true',
-                    response: responseData,
-                    message: 'HIV MGD data sync successful...'
-                });
+                res.status(200).send(result);
             }).catch(err => {
                 // ... error checks
                 console.log('Out catch closing sql connection');
                 sql.close();
                 console.log(err);
-                res.status(500).send({
-                    success: 'false',
-                    message: 'HIV MGD data sync successful...'
-                });
+                res.status(500).send(err);
             });
         })
 
-  
-        function insert_HIVSA(subAsses,pool){
+        function insert_HIVSA(objSubAssess,userId, deviceId,pool){
             return new Promise(function(resolve,reject){
+
+                var tvp_SubAssess = new sql.Table();  
+                tvp_SubAssess.columns.add('Id', sql.Int);  
+                tvp_SubAssess.columns.add('userId', sql.Int);  
+                tvp_SubAssess.columns.add('deviceId', sql.NVarChar(100));  
+                tvp_SubAssess.columns.add('patientId', sql.NVarChar(100));  
+                tvp_SubAssess.columns.add('startTime', sql.NVarChar(25)); 
+                tvp_SubAssess.columns.add('endTime', sql.NVarChar(25)); 
+                tvp_SubAssess.columns.add('risk', sql.NVarChar(100)); 
+                tvp_SubAssess.columns.add('riskValue', sql.Float(53)); 
+                tvp_SubAssess.columns.add('partnerRiskValue', sql.Float(53)); 
+                tvp_SubAssess.columns.add('latitude', sql.NVarChar(30));
+                tvp_SubAssess.columns.add('longitude', sql.NVarChar(30));
+                tvp_SubAssess.columns.add('jsonVersion', sql.NVarChar(25));
+                tvp_SubAssess.columns.add('devicetimeStamp', sql.NVarChar(30));
+
                 var tvp_SAAns = new sql.Table();  
-                 
+                tvp_SAAns.columns.add('id', sql.Int); 
                 tvp_SAAns.columns.add('questionId', sql.Int);  
                 tvp_SAAns.columns.add('optionId', sql.Int);  
                 tvp_SAAns.columns.add('optionValue', sql.Bit);  
-                tvp_SAAns.columns.add('optionResponse', sql.NVarChar(100));  
-                
-                subAsses.answers.forEach(function(answer){
-                   
-                    tvp_SAAns.rows.add(answer.questionId,answer.optionId,answer.optionValue=="true"?1:0,answer.optionResponse)
-                });
+                tvp_SAAns.columns.add('optionResponse', sql.NVarChar(100)); 
 
                 var tvp_SAQStatus = new sql.Table();  
-                
+                tvp_SAQStatus.columns.add('id', sql.Int);
                 tvp_SAQStatus.columns.add('questionId', sql.Int);  
-                tvp_SAQStatus.columns.add('status', sql.NVarChar(50));  
-                subAsses.questionStatuses.forEach(function(queStatus){
-                    
-                    tvp_SAQStatus.rows.add(queStatus.questionId,queStatus.status)
+                tvp_SAQStatus.columns.add('status', sql.NVarChar(50)); 
+                var subID = 1;
+                objSubAssess.forEach(subAssess => {
+                    tvp_SubAssess.rows.add(subID,userId,deviceId,subAssess.patientId,subAssess.startTime,subAssess.endTime,subAssess.risk,subAssess.riskValue,subAssess.partnerRiskValue,subAssess.latitude,subAssess.longitude,subAssess.jsonVersion,subAssess.deviceTimestamp);
+                    subAssess.answers.forEach(function(answer){
+                   
+                        tvp_SAAns.rows.add(subID,answer.questionId,answer.optionId,answer.optionValue=="true"?1:0,answer.optionResponse)
+                    });
+                    subAssess.questionStatuses.forEach(function(queStatus){
+                        tvp_SAQStatus.rows.add(subID,queStatus.questionId,queStatus.status)
+                    });
+                    subID+=1;
                 });
-
                 console.log('before sql');
-                
                 return pool.request()
+                .input('SubjectiveAssessment', tvp_SubAssess)
                 .input('SAAnswers', tvp_SAAns)
                 .input('SAQuestionStatus', tvp_SAQStatus)
-                .input('deviceId', objUser.deviceId)
-                .input('emailId', objUser.email)
-                .input('fullName', objUser.fullName)
-                .input('trialId', objUser.trialId)
-                .input('patientId', subAsses.patientId)
-                .input('startTime', subAsses.startTime)
-                .input('endTime', subAsses.endTime)
-                .input('risk', subAsses.risk)
-                .input('riskValue', subAsses.riskValue)
-                .input('partnerRiskValue', subAsses.partnerRiskValue)
-                .input('jsonVersion', subAsses.jsonVersion)
-                .input('latitude', subAsses.latitude)
-                .input('longitude', subAsses.longitude)
-                .input('devicetimeStamp', subAsses.deviceTimestamp)
+                .input('deviceId', deviceId)  
                 .execute("Insert_HIVSubjectiveAssessment")
                 .then(result => {
                     console.dir(result);
                     console.log('Then closing sql connection');
-                    resolve({patientID: subAsses.patientId,subAssessID: result.returnValue, message: "Subjective Assessment Recorded Successfully."});
+                    resolve({status:true,message: "Subjective Assessment Recorded Successfully."});
                 })
                 .catch(err => {
                     // ... error checks
                     console.log('In catch closing sql connection');                   
-                    reject(err);
+                    reject({status:false,message:err});
                 });
+               
+                
             });
             
         }

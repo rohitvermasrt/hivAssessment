@@ -15,7 +15,7 @@ $(document).ready(function() {
     {
         const subAssID = $.urlParam('id');
         var apiHost = $(location).attr('host');
-        var apiURL = "http://" + apiHost + "/api/v1/getSubjectiveAssessment" + subAssID;
+        var apiURL = "https://" + apiHost + "/api/v1/getSubjectiveAssessment" + subAssID;
         console.log(apiURL);
         $.ajax({
             url: apiURL,

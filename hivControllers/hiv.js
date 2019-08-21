@@ -29,7 +29,7 @@ class HIVController {
         });
 
         const id = parseInt(req.params.id, 10);
-
+        console.log("Searching for ID : " + id);
         return new sql.ConnectionPool(config).connect()
         .then(pool => {
             pool.request()
@@ -37,7 +37,6 @@ class HIVController {
             .execute("get_SubjectiveAssessment")
             .then(result => {
                 console.dir(result);
-                //console.log(JSON.stringify(result.recordsets[0]));
                 console.log('Then closing sql connection');
                 sql.close();
                 if(result.recordsets.length >0 ){
@@ -68,10 +67,104 @@ class HIVController {
     }
 
 
+    getSubjectiveAssessmentByUserID(req,res){
+        var data = req.body; 
+        var sql = require('mssql');
+        var config = JSON.parse(process.env["SQLConnectionString"]);
+        sql.on('error', err => {
+            console.log("SQL Connection Error");
+            console.log(err);
+            // ... error handler
+        });
+
+        const id = parseInt(req.params.id, 10);
+        console.log("Searching for ID : " + id);
+        return new sql.ConnectionPool(config).connect()
+        .then(pool => {
+            pool.request()
+            .input('userID', id)
+            .execute("get_HIVSubjectiveAssessmentsByUserID")
+            .then(result => {
+                console.dir(result);
+                console.log('Then closing sql connection');
+                sql.close();
+                if(result.recordsets.length >0 ){
+                    res.status(200).send(
+                        result.recordset
+                    );
+                }else{
+                    res.status(400).send({
+                        success: 'false',
+                        message: 'No Subjective Assessments found for given UserID .'
+                    });
+                }
+            })
+            .catch(err => {
+                console.log('In catch closing sql connection');
+                sql.close();
+                console.log(err.message);
+                res.status(500).send({
+                    success: 'false',
+                    message: err.message
+                });
+            });
+
+        });
+
+    }
+
+    getUsersByTrialID(req,res){
+        var sql = require('mssql');
+        var config = JSON.parse(process.env["SQLConnectionString"]);
+        sql.on('error', err => {
+            console.log("SQL Connection Error");
+            console.log(err);
+            // ... error handler
+        });
+
+        const trialID = req.params.id;
+        console.log("Searching for ID : " + trialID);
+        return new sql.ConnectionPool(config).connect()
+        .then(pool => {
+            pool.request()
+            .input('trialID', trialID)
+            .execute("get_UsersByTrialID")
+            .then(result => {
+                console.dir(result);
+                console.log('Then closing sql connection');
+                sql.close();
+                if(result.recordsets.length >0 ){
+                    res.status(200).send(
+                        result.recordset
+                    );
+                }else{
+                    res.status(400).send({
+                        success: 'false',
+                        message: 'No Users found for given TrialID.'
+                    });
+                }
+            })
+            .catch(err => {
+                console.log('In catch closing sql connection');
+                sql.close();
+                console.log(err.message);
+                res.status(500).send({
+                    success: 'false',
+                    message: err.message
+                });
+            });
+
+        });
+
+    }
+
+
+
     hivmgdSync(req,res){
         var LINQ = require('node-linq').LINQ;
         var data = req.body;
         var user = data.user;
+        var responseData = {};
         var objUser = {
             trialId : user.trialId,
             fullName : user.fullName,
@@ -102,7 +195,7 @@ class HIVController {
         })
         .ToArray();
         var sql = require('mssql');
-        var config = JSON.parse(process.env["SQLConnectionString"]);
+        var config = JSON.parse(process.env["SQLConnectionString"] || '{"user": "mgdhivdataadmin","password": "Bss@2005","server": "mgdhivdata.database.windows.net","database":"hivmgddev","encrypt": true,"connectionTimeout": 300000,"requestTimeout": 300000,"options": {"encrypt": true},"pool":{"max": 100,"min": 0,"idleTimeoutMillis": 300000 }}');
         sql.on('error', err => {
             console.log("SQL Connection Error");
             console.log(err);
@@ -121,6 +214,7 @@ class HIVController {
             .execute("Insert_User")
             .then(result => {
                 console.dir(result);
+                responseData.UserID = result.returnValue;
                 var myPromises = []
                 objSubAssess.forEach(subAssess => {
                     myPromises.push(insert_HIVSA(subAssess,pool));
@@ -132,8 +226,10 @@ class HIVController {
                 console.log('Then ');
                 console.log(result);
                 sql.close();
+                responseData.returnValue = result;
                 res.status(200).send({
                     success: 'true',
+                    response: responseData,
                     message: 'HIV MGD data sync successful...'
                 });
             }).catch(err => {
@@ -195,18 +291,11 @@ class HIVController {
                 .then(result => {
                     console.dir(result);
                     console.log('Then closing sql connection');
-                    // sql.close();
-                    // res.status(200).send({
-                    //     success: 'true',
-                    //     message: 'HIV MGD data sync successful...'
-                    // });
-                    resolve("Insertion successfull");
+                    resolve({patientID: subAsses.patientId,subAssessID: result.returnValue, message: "Subjective Assessment Recorded Successfully."});
                 })
                 .catch(err => {
                     // ... error checks
-                    console.log('In catch closing sql connection');
-                    //sql.close();
-                   
+                    console.log('In catch closing sql connection');                   
                     reject(err);
                 });
             });

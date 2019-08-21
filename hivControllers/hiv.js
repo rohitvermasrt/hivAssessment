@@ -221,7 +221,7 @@ class HIVController {
                 console.log('Then ');
                 console.log(result);
                 sql.close();
-                responseData.returnValue = result;
+                //responseData.returnValue = result;
                 res.status(200).send(result);
             }).catch(err => {
                 // ... error checks
@@ -283,12 +283,12 @@ class HIVController {
                 .then(result => {
                     console.dir(result);
                     console.log('Then closing sql connection');
-                    resolve({status:true,message: "Subjective Assessment Recorded Successfully."});
+                    resolve({status:'true',message: 'Subjective Assessment Recorded Successfully.'});
                 })
                 .catch(err => {
                     // ... error checks
                     console.log('In catch closing sql connection');                   
-                    reject({status:false,message:err});
+                    reject({status:'false',message:err});
                 });
                
                 

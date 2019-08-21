@@ -6,8 +6,8 @@ const app = express();
 const path = require("path")
 
 // Parse incoming requests data
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({limit:1024*1024*20, type:'application/json'}));
+app.use(bodyParser.urlencoded({ extended:true,limit:1024*1024*20,type:'application/x-www-form-urlencoding' }));
 app.use(router);
 app.use(express.static(path.join(__dirname,'public')))
 // get all todos

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Subjective Assessment</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/themes/redmond/jquery-ui.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/css/ui.jqgrid.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/free-jqgrid/4.15.5/jquery.jqgrid.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+    <script src='./subjectiveAssessment.js'></script>
+    <style>
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+        }
+        th, td {
+          padding: 5px;
+          text-align: left;    
+        }
+        </style>
+    <style>
+            label, input { display:block; }
+            input.text { margin-bottom:12px; width:95%; padding: .4em; }
+            fieldset { padding:0; border:0; margin-top:25px; }
+            h1 { font-size: 1.2em; margin: .6em 0; }
+            div#users-contain { width: 350px; margin: 20px 0; }
+            div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
+            div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+            .ui-dialog .ui-state-error { padding: .3em; }
+            .validateTips { border: 1px solid transparent; padding: 0.3em; }
+          </style>
+
+    <style>
+        .usersDiv {
+            
+            position: absolute;
+            left: 30%;
+            top: 10%;
+        }
+    </style>
+</head>
+<body>
+    <div id="frmTrial" title="Trial">
+            <label for="lblTrial">Please enter Trial ID : </label>
+            <input id="txtTrialID" type="text" /> 
+            <input id="btnTrialSubmit" type="submit" text='Submit' />
+    </div>
+    <div id="divUsers" style="display:none" class="usersDiv">
+        <select id="users" class="users"></select><input id="btnSubmit" type="submit" text='Submit' />
+    </div>
+    <div>
+        <table id="grid"></table>
+    </div>
+    <div id="dispSubAssess" title="subjectiveAssessment">
+            <p class="validateTips">All form fields are required.</p>
+        <div id="divSubAssess"></div>
+    </div>
+    <div id="wait" style="display:none;width:69px;height:89px;border:1px solid black;position:absolute;top:50%;left:50%;padding:2px;"><img src='images/basicloader.gif' width="64" height="64" /><br>Loading..</div>
+</body>
+</html>

@@ -7,6 +7,12 @@ $.urlParam = function (name) {
 var dialog, form;
 
 $(document).ready(function() {
+  $(document).ajaxStart(function(){
+    $("#wait").css("display", "block");
+  });
+  $(document).ajaxComplete(function(){
+    $("#wait").css("display", "none");
+  });
     var lastsel;
     $("#divUsers").hide();
      $("#dispSubAssess").dialog({
@@ -134,7 +140,7 @@ function getHIVSubjectiveAssessmentByUserID(userid)
                  filteredData.forEach(ans => {
                    element.options.forEach(option => {
                      if(ans.optionId==option.optionId){
-                      output += "<tr><td><b>" + option.option + (ans.optionResponse!="null"? " - " + ans.optionResponse : "") + "</td></tr>";
+                      output += "<tr><td><b>" + option.option==undefined?"": option.option + (ans.optionResponse!="null"? " - " + ans.optionResponse : "") + "</td></tr>";
                       //break;
                      }
                     

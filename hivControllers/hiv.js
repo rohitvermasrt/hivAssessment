@@ -1,7 +1,7 @@
  
 class HIVController {
   
-    
+  
     testCheck(req,res){
           
         res.status(200).send({
@@ -21,7 +21,7 @@ class HIVController {
     getSubjectiveAssessment(req,res){
         var data = req.body; 
         var sql = require('mssql');
-        var config = JSON.parse(process.env["SQLConnectionString"] );
+        var config = JSON.parse(process.env["SQLConnectionString"]);
         sql.on('error', err => {
             console.log("SQL Connection Error");
             console.log(err);
@@ -195,7 +195,7 @@ class HIVController {
         })
         .ToArray();
         var sql = require('mssql');
-        var config = JSON.parse(process.env["SQLConnectionString"]);
+        var config = JSON.parse(process.env["SQLConnectionString"] );
         sql.on('error', err => {
             console.log("SQL Connection Error");
             console.log(err);
@@ -283,7 +283,7 @@ class HIVController {
                 .then(result => {
                     console.dir(result);
                     console.log('Then closing sql connection');
-                    resolve({success:'true',message: 'Subjective Assessment Recorded Successfully.'});
+                    resolve({success:'true',message: 'Subjective Assessment Recorded Successfully.', failedCount : result.recordsets[0][0].FailedCount});
                 })
                 .catch(err => {
                     // ... error checks

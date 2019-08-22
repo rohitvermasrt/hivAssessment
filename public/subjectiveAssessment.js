@@ -103,7 +103,7 @@ function getHIVSubjectiveAssessmentByUserID(userid)
             success: function(response) {
                 console.log(response);
                 $.each(response, function (){
-                    $(".users").append($("<option     />").val(this.id).text(this.name));
+                    $("#users").append("<a class='dropdown-item'>"  + this.name + "</a>");
                 });
                 $("#frmTrial").dialog('close');
                 $("#divUsers").show();
@@ -140,7 +140,7 @@ function getHIVSubjectiveAssessmentByUserID(userid)
                  filteredData.forEach(ans => {
                    element.options.forEach(option => {
                      if(ans.optionId==option.optionId){
-                      output += "<tr><td><b>" + option.option==undefined?"": option.option + (ans.optionResponse!="null"? " - " + ans.optionResponse : "") + "</td></tr>";
+                      output += "<tr><td><b>" + option.option + (ans.optionResponse!="null"? " - " + ans.optionResponse : "") + "</td></tr>";
                       //break;
                      }
                     

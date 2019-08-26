@@ -70,7 +70,7 @@ class HIVController {
     getSubjectiveAssessmentByUserID(req,res){
         var data = req.body; 
         var sql = require('mssql');
-        var config = JSON.parse(process.env["SQLConnectionString"] );
+        var config = JSON.parse(process.env["SQLConnectionString"]);
         sql.on('error', err => {
             console.log("SQL Connection Error");
             console.log(err);
@@ -195,7 +195,7 @@ class HIVController {
         })
         .ToArray();
         var sql = require('mssql');
-        var config = JSON.parse(process.env["SQLConnectionString"] );
+        var config = JSON.parse(process.env["SQLConnectionString"]);
         sql.on('error', err => {
             console.log("SQL Connection Error");
             console.log(err);

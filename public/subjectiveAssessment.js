@@ -14,7 +14,7 @@ $(document).ready(function() {
     $("#wait").css("display", "none");
   });
     var lastsel;
-    $("#divUsers").hide();
+    
      $("#dispSubAssess").dialog({
       autoOpen: false,
       height: 500,
@@ -24,16 +24,16 @@ $(document).ready(function() {
     });
 
     $("#frmTrial").dialog({
-      autoOpen: true,
+      autoOpen: false,
       height: 400,
       width: 400,
       modal: true,
       closeOnEscape: false
     });
     
-    $( "#btnSubmit" ).click(function() {
+    $("#btnSubmit" ).click(function() {
         var value = $("#users option:selected").val();
-        alert(value);
+        //alert(value);
         getHIVSubjectiveAssessmentByUserID(value);
       });
     
@@ -41,14 +41,33 @@ $(document).ready(function() {
         var trialID = $("#txtTrialID").val();
         getUsersByTrialID(trialID);
     }); 
-    
+    $('#btnReset').click(function(){
+      clearForm();
+    });
+    clearForm();
     //$("#frmTrial").dialog('open');   
 });
+
+function clearForm()
+{
+  $("#frmTrial").dialog('open');
+  $("#divUsers").hide();
+  $('#divAssessments').hide();
+  //$("#grid").jqGrid("clearGridData");
+  $("#grid").jqGrid("GridUnload");
+  $('#users')
+    .find('option')
+    .remove()
+    .end()
+    .append('<option value="select">Select User</option>')
+    .val('select');
+  
+}
 
 function getHIVSubjectiveAssessmentByUserID(userid)
     {
         var apiHost = $(location).attr('host');
-        var apiURL = "https://" + apiHost + "/api/v1/getHIVSubjectiveAssessmentByUserID" + userid;
+        var apiURL = "http://" + apiHost + "/api/v1/getHIVSubjectiveAssessmentByUserID" + userid;
         console.log(apiURL);
         $.ajax({
             url: apiURL,
@@ -81,7 +100,9 @@ function getHIVSubjectiveAssessmentByUserID(userid)
 
                     }
                 });
-                alert('Data Loaded..');
+                $('#divAssessments').show();
+                //alert('Data Loaded..');
+
               //Do Something
             },
             error: function(xhr) {
@@ -95,7 +116,7 @@ function getHIVSubjectiveAssessmentByUserID(userid)
     {
         //const userID = $.urlParam('id');
         var apiHost = $(location).attr('host');
-        var apiURL = "https://" + apiHost + "/api/v1/getUsersByTrialID" + trialID;
+        var apiURL = "http://" + apiHost + "/api/v1/getUsersByTrialID" + trialID;
         console.log(apiURL);
         $.ajax({
             url: apiURL,
@@ -103,9 +124,10 @@ function getHIVSubjectiveAssessmentByUserID(userid)
             success: function(response) {
                 console.log(response);
                 $.each(response, function (){
-                    $("#users").append("<a class='dropdown-item'>"  + this.name + "</a>");
+                    $("#users").append($("<option     />").val(this.id).text(this.name));
+                    //$("#users").append("<a class='dropdown-item'>"  + this.name + "</a>");
                 });
-                $("#frmTrial").dialog('close');
+                $("#frmTrial").dialog('close');0
                 $("#divUsers").show();
               //Do Something
             },
@@ -120,7 +142,7 @@ function getHIVSubjectiveAssessmentByUserID(userid)
     {
         const subAssID = id;
         var apiHost = $(location).attr('host');
-        var apiURL = "https://" + apiHost + "/api/v1/getSubjectiveAssessment" + subAssID;
+        var apiURL = "http://" + apiHost + "/api/v1/getSubjectiveAssessment" + subAssID;
         console.log(apiURL);
         $.ajax({
             url: apiURL,

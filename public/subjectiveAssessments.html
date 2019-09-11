@@ -25,7 +25,6 @@
         #imgIPRD{
             position: absolute;
             top:3%;
-            left: 2%;
         }
         #divReset{
             position:absolute;
@@ -50,6 +49,11 @@
             margin-left: -50px;
             width: 350px;
             height: 100px;
+        }
+        #divSummary{
+            position: absolute;
+            top: 7%;
+            left: 18%;
         }
 </style>
     <style>
@@ -125,28 +129,37 @@
         <input id="txtTrialID" type="text" />
         <input id="btnTrialSubmit" type="submit" text='Submit' />
     </div>
+    <div id="divTrialSummary">
+
+    </div>
     <!--  style="display: none;" -->
     <div id="divReset">
             <button id="btnReset" class="btn btn-primary">Reset</button>
     </div>
     <div> 
-        <div id="divUsers" style="display: none;" >
+            
+        <div id="divSummary" style="display: none;" >
+            <b>
+                <label id="lblUsers"></label>
+                <label id="lblSubAss"></label>
+            </b>
+        </div>
+        <div id="divUsers" style="display: none;" class="two">                  
             <fieldset>
                <legend style="color:black;font-weight:bold;">Select User</legend>
                <table>
                   <tr>
                     <td>
+                        
                             <select id="users" style="width:135px;"></select>   
                     </td>
-                  </tr>
-                  <tr>
-                     
-                     <td><button id="btnSubmit" class="btn btn-primary" type="submit">View Assessments</button></td>
+                     <td>   
+                         <button id="btnSubmit" class="btn btn-primary" type="submit">View Assessments</button></td>
                   </tr>
                </table>
             </fieldset>
          </div>
-         <div id="divAssessments">
+            <div id="divAssessments">
             <div class="container">
                 <table id="grid"></table>
             </div>

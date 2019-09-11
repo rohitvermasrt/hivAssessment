@@ -1,3 +1,4 @@
+QuestionJSON = [];
 $.urlParam = function (name) {
     var results = new RegExp('[\?&]' + name + '=([^&#]*)')
                       .exec(window.location.search);
@@ -7,6 +8,7 @@ $.urlParam = function (name) {
 var dialog, form;
 
 $(document).ready(function() {
+  
   $(document).ajaxStart(function(){
     $("#wait").css("display", "block");
   });
@@ -25,7 +27,7 @@ $(document).ready(function() {
 
     $("#frmTrial").dialog({
       autoOpen: false,
-      height: 400,
+      height: 190,
       width: 400,
       modal: true,
       closeOnEscape: false
@@ -45,15 +47,19 @@ $(document).ready(function() {
       clearForm();
     });
     clearForm();
-    //$("#frmTrial").dialog('open');   
 });
+function clearGrid()
+{
+  $("#grid").jqGrid("GridUnload");
+}
 
 function clearForm()
 {
   $("#frmTrial").dialog('open');
   $("#divUsers").hide();
   $('#divAssessments').hide();
-  //$("#grid").jqGrid("clearGridData");
+  $('#divSummary').hide();
+  $("#grid").jqGrid("clearGridData");
   $("#grid").jqGrid("GridUnload");
   $('#users')
     .find('option')
@@ -61,19 +67,19 @@ function clearForm()
     .end()
     .append('<option value="select">Select User</option>')
     .val('select');
-  
+  $('#txtTrialID').text('');
 }
 
 function getHIVSubjectiveAssessmentByUserID(userid)
     {
         var apiHost = $(location).attr('host');
-        var apiURL = "https://" + apiHost + "/api/v1/getHIVSubjectiveAssessmentByUserID" + userid;
-        console.log(apiURL);
+        var apiURL = "http://" + apiHost + "/api/v1/getHIVSubjectiveAssessmentByUserID" + userid;
+        $("#grid").jqGrid("clearGridData");
+        $("#grid").jqGrid("GridUnload");
         $.ajax({
             url: apiURL,
             type: "get", //send it through get method
             success: function(response) {
-                console.log(response);
                 $("#grid").jqGrid({
                     colModel: [
                         {name: "Id"},
@@ -87,23 +93,12 @@ function getHIVSubjectiveAssessmentByUserID(userid)
                     ],
                     data: response,
                     onSelectRow : function(id){ 
-                        console.log('On Select = ' + id);
                         data = $(this).jqGrid("getLocalRow", id);
-                        console.log(data);
-                        
                         getSubjectiveAssessmentByID(data.Id);
-                        // if (id && id !== lastsel) {
-                        //     $('#grid').restoreRow(lastsel);
-                        //     $('#grid').editRow(id, true);
-                        //     lastsel = id;
-                        // }
-
                     }
                 });
                 $('#divAssessments').show();
-                //alert('Data Loaded..');
-
-              //Do Something
+                
             },
             error: function(xhr) {
                 console.log(xhr);
@@ -116,18 +111,24 @@ function getHIVSubjectiveAssessmentByUserID(userid)
     {
         //const userID = $.urlParam('id');
         var apiHost = $(location).attr('host');
-        var apiURL = "https://" + apiHost + "/api/v1/getUsersByTrialID" + trialID;
-        console.log(apiURL);
+        var apiURL = "http://" + apiHost + "/api/v1/getUsersByTrialID" + trialID;
         $.ajax({
             url: apiURL,
             type: "get", //send it through get method
             success: function(response) {
-                console.log(response);
-                $.each(response, function (){
+              console.log(response);
+                $.each(response[0], function (){
                     $("#users").append($("<option     />").val(this.id).text(this.name));
                     //$("#users").append("<a class='dropdown-item'>"  + this.name + "</a>");
                 });
-                $("#frmTrial").dialog('close');0
+
+                window.QuestionJSON = response[1];
+                console.log(response);
+                console.log(window.QuestionJSON);
+                $('#lblUsers').text('Total Users : ' + response[2][0].UserCount);
+                $('#lblSubAss').text('Total Subjective Assessments : '  + response[3][0].SACount);
+                $('#divSummary').show();
+                $("#frmTrial").dialog('close');
                 $("#divUsers").show();
               //Do Something
             },
@@ -142,15 +143,15 @@ function getHIVSubjectiveAssessmentByUserID(userid)
     {
         const subAssID = id;
         var apiHost = $(location).attr('host');
-        var apiURL = "https://" + apiHost + "/api/v1/getSubjectiveAssessment" + subAssID;
-        console.log(apiURL);
+        var apiURL = "http://" + apiHost + "/api/v1/getSubjectiveAssessment" + subAssID;
         $.ajax({
             url: apiURL,
             type: "get", //send it through get method
             success: function(response) {
-                console.log(response);
-                var subjAssJSON = JSON.parse(response.result.recordsets[0][0].ActualJSON);
-                var answers = response.result.recordsets[1];
+                console.log('Question JSON');
+                var subjAssJSON = JSON.parse(window.QuestionJSON[0].ActualJSON);
+                console.log(subjAssJSON);
+                var answers = response.result.recordsets[0];
                 var output = '<table style="width:100%">';
                 
                 subjAssJSON.forEach(element => {
@@ -162,16 +163,14 @@ function getHIVSubjectiveAssessmentByUserID(userid)
                  filteredData.forEach(ans => {
                    element.options.forEach(option => {
                      if(ans.optionId==option.optionId){
-                      output += "<tr><td><b>" + option.option + (ans.optionResponse!="null"? " - " + ans.optionResponse : "") + "</td></tr>";
+                      output += "<tr><td><b>" + (typeof option.option === 'undefined'? "" : option.option) + (ans.optionResponse!="null"? " - " + ans.optionResponse : "") + "</td></tr>";
                       //break;
                      }
                     
                    })
                     
                  });
-                 
-                 console.log(filteredData);
-                 
+                                                 
                 });
                 output+= "</table>";
                 $("#divSubAssess").html(output);

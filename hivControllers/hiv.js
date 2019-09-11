@@ -135,7 +135,7 @@ class HIVController {
                 sql.close();
                 if(result.recordsets.length >0 ){
                     res.status(200).send(
-                        result.recordset
+                        result.recordsets
                     );
                 }else{
                     res.status(400).send({
@@ -219,7 +219,6 @@ class HIVController {
             })           
             .then((result) => {
                 console.log('Then ');
-                console.log(result);
                 sql.close();
                 //responseData.returnValue = result;
                 res.status(200).send(result);

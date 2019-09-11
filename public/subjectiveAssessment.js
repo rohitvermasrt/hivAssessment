@@ -73,7 +73,7 @@ function clearForm()
 function getHIVSubjectiveAssessmentByUserID(userid)
     {
         var apiHost = $(location).attr('host');
-        var apiURL = "http://" + apiHost + "/api/v1/getHIVSubjectiveAssessmentByUserID" + userid;
+        var apiURL = "https://" + apiHost + "/api/v1/getHIVSubjectiveAssessmentByUserID" + userid;
         $("#grid").jqGrid("clearGridData");
         $("#grid").jqGrid("GridUnload");
         $.ajax({
@@ -111,7 +111,7 @@ function getHIVSubjectiveAssessmentByUserID(userid)
     {
         //const userID = $.urlParam('id');
         var apiHost = $(location).attr('host');
-        var apiURL = "http://" + apiHost + "/api/v1/getUsersByTrialID" + trialID;
+        var apiURL = "https://" + apiHost + "/api/v1/getUsersByTrialID" + trialID;
         $.ajax({
             url: apiURL,
             type: "get", //send it through get method
@@ -143,7 +143,7 @@ function getHIVSubjectiveAssessmentByUserID(userid)
     {
         const subAssID = id;
         var apiHost = $(location).attr('host');
-        var apiURL = "http://" + apiHost + "/api/v1/getSubjectiveAssessment" + subAssID;
+        var apiURL = "https://" + apiHost + "/api/v1/getSubjectiveAssessment" + subAssID;
         $.ajax({
             url: apiURL,
             type: "get", //send it through get method

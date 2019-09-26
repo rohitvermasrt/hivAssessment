@@ -22,6 +22,41 @@
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src='./subjectiveAssessment.js'></script>
     <style>
+        #imgIPRD{
+            position: absolute;
+            top:3%;
+        }
+        #divReset{
+            position:absolute;
+            top: 5%;
+            right: 5%;
+        }
+        #divUsers{
+            position: absolute;
+            top: 5%;
+            left: 40%;
+            margin-top: -50px;
+            margin-left: -50px;
+            width: 350px;
+            height: 100px;
+        }
+
+        #divAssessments{
+            position: absolute;
+            top: 30%;
+            left: 12%;
+            margin-top: -50px;
+            margin-left: -50px;
+            width: 350px;
+            height: 100px;
+        }
+        #divSummary{
+            position: absolute;
+            top: 7%;
+            left: 18%;
+        }
+</style>
+    <style>
         table,
         th,
         td {
@@ -85,48 +120,52 @@
             padding: 0.3em;
         }
     </style>
-
-    <style>
-        .usersDiv {
-
-            position: absolute;
-            left: 30%;
-            top: 10%;
-        }
-    </style>
 </head>
 
 <body>
+    <img id="imgIPRD" src="images/iprd.png" alt="IPRD Solutions" >
     <div id="frmTrial" title="Trial">
         <label for="lblTrial">Please enter Trial ID : </label>
         <input id="txtTrialID" type="text" />
         <input id="btnTrialSubmit" type="submit" text='Submit' />
     </div>
+    <div id="divTrialSummary">
 
-    <div class="container" style="overflow:hidden"> 
-        <div class="row">
-            <div class="col">
-                <div id="divUsers" class="usersDiv">
-                    <!-- <select id="users" class="users"></select><input id="btnSubmit" type="submit" text='Submit' /> -->
-                    <div class="dropdown">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
-                            Users
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="users">
-
-
-                        </div>
-                    </div>
-                    <button class="btn btn-primary" type="submit">Button</button>
-
-                    <div>
-                        <table id="grid"></table>
-                    </div>
-                </div>
+    </div>
+    <!--  style="display: none;" -->
+    <div id="divReset">
+            <button id="btnReset" class="btn btn-primary">Reset</button>
+    </div>
+    <div> 
+            
+        <div id="divSummary" style="display: none;" >
+            <b>
+                <label id="lblUsers"></label>
+                <label id="lblSubAss"></label>
+            </b>
+        </div>
+        <div id="divUsers" style="display: none;" class="two">                  
+            <fieldset>
+               <legend style="color:black;font-weight:bold;">Select User</legend>
+               <table>
+                  <tr>
+                    <td>
+                        
+                            <select id="users" style="width:135px;"></select>   
+                    </td>
+                     <td>   
+                         <button id="btnSubmit" class="btn btn-primary" type="submit">View Assessments</button></td>
+                  </tr>
+               </table>
+            </fieldset>
+         </div>
+            <div id="divAssessments">
+            <div class="container">
+                <table id="grid"></table>
             </div>
         </div>
     </div>
+            
 
     <div id="dispSubAssess" title="subjectiveAssessment">
         <p class="validateTips">All form fields are required.</p>

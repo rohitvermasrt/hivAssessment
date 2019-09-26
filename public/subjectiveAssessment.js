@@ -125,8 +125,8 @@ function getHIVSubjectiveAssessmentByUserID(userid)
                 window.QuestionJSON = response[1];
                 console.log(response);
                 console.log(window.QuestionJSON);
-                $('#lblUsers').text('Total Users : ' + response[2][0].UserCount);
-                $('#lblSubAss').text('Total Subjective Assessments : '  + response[3][0].SACount);
+                $('#lblUsers').text('Users : ' + response[2][0].UserCount);
+                $('#lblSubAss').text('Assessments : '  + response[3][0].SACount);
                 $('#divSummary').show();
                 $("#frmTrial").dialog('close');
                 $("#divUsers").show();
@@ -163,7 +163,7 @@ function getHIVSubjectiveAssessmentByUserID(userid)
                  filteredData.forEach(ans => {
                    element.options.forEach(option => {
                      if(ans.optionId==option.optionId){
-                      output += "<tr><td><b>" + (typeof option.option === 'undefined'? "" : option.option) + (ans.optionResponse!="null"? " - " + ans.optionResponse : "") + "</td></tr>";
+                      output += "<tr><td><b>" + (element.questionId==11 && (ans.optionId>0 && ans.optionId<23)  ? ((ans.optionId>0 && ans.optionId<12) ? 'Male - ' + option.option + ' (' + ans.optionResponse + ')' : 'Female - ' + option.option + ' (' + ans.optionResponse + ')'  ): (element.questionId==2 ? ans.optionResponse.substring(0,10) : (typeof option.option === 'undefined'? "" : option.option) + (ans.optionResponse!="null"? " - " + ans.optionResponse : ""))) + "</td></tr>";
                       //break;
                      }
                     
